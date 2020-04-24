@@ -2,7 +2,14 @@ import React, { Component } from 'react';
 import { Text, View,FlatList , ScrollView} from 'react-native';
 import { Card } from 'react-native-elements';
 import { ListItem } from 'react-native-elements';
-import { LEADERS } from '../shared/leaders';
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
+
+const mapStateToProps = state => {
+    return {
+      leaders: state.leaders
+    }
+  }
 
 function History() {
 
@@ -21,20 +28,14 @@ function History() {
 
 
 class About extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            leaders: LEADERS
-        };
-    }
-
+   
     static navigationOptions = {
         title: 'About Us'
     };
 
     render() {
 
-        const renderMenuItem = ({ item, index }) => {
+        const renderLeader = ({ item, index }) => {
 
             return (
                 <ListItem
@@ -42,7 +43,7 @@ class About extends Component {
                     title={item.name}
                     subtitle={item.description}
                     hideChevron={true}
-                    leftAvatar={{ source: require('./images/alberto.png') }}
+                    leftAvatar={{source: {uri: baseUrl + item.image}}}
                 />
             );
         };
@@ -52,11 +53,11 @@ class About extends Component {
             <ScrollView>
             <History />
             <Card title='Corporate Leadership'>
-            <FlatList
-                data={this.state.leaders}
-                renderItem={renderMenuItem}
-                keyExtractor={item => item.id.toString()}
-            />
+            <FlatList 
+                    data={this.props.leaders.leaders}
+                    renderItem={renderLeader}
+                    keyExtractor={item => item.id.toString()}
+                    />
             </Card>
             </ScrollView>
         );
@@ -64,4 +65,4 @@ class About extends Component {
     }
 }
 
-export default About;
+export default connect(mapStateToProps)(About);
