@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, Picker, Switch, Button, Modal, ScrollView, FlatList } from 'react-native';
 import { Card, Icon, Rating, Input } from 'react-native-elements';
-import DatePicker from 'react-native-datepicker'
+import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { postFavorite, postComment } from '../redux/ActionCreators';
@@ -25,31 +25,33 @@ function RenderDish(props) {
 
     if (dish != null) {
         return (
-            <Card
-                featuredTitle={dish.name}
-                image={{ uri: baseUrl + dish.image }}>
-                <Text style={{ margin: 10 }}>
-                    {dish.description}
-                </Text>
-                <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'center' }}>
-                    <Icon
-                        raised
-                        reverse
-                        name={props.favorite ? 'heart' : 'heart-o'}
-                        type='font-awesome'
-                        color='#f50'
-                        onPress={() => props.favorite ? console.log('Already favorite') : props.onPress()}
-                    />
-                    <Icon
-                        raised
-                        reverse
-                        name={'pencil'}
-                        type='font-awesome'
-                        color='#0000FF'
-                        onPress={() => props.onPress1()}
-                    />
-                </View>
-            </Card>
+            <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+                <Card
+                    featuredTitle={dish.name}
+                    image={{ uri: baseUrl + dish.image }}>
+                    <Text style={{ margin: 10 }}>
+                        {dish.description}
+                    </Text>
+                    <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'center' }}>
+                        <Icon
+                            raised
+                            reverse
+                            name={props.favorite ? 'heart' : 'heart-o'}
+                            type='font-awesome'
+                            color='#f50'
+                            onPress={() => props.favorite ? console.log('Already favorite') : props.onPress()}
+                        />
+                        <Icon
+                            raised
+                            reverse
+                            name={'pencil'}
+                            type='font-awesome'
+                            color='#0000FF'
+                            onPress={() => props.onPress1()}
+                        />
+                    </View>
+                </Card>
+            </Animatable.View>
         );
     }
     else {
@@ -70,14 +72,15 @@ function RenderComments(props) {
                     imageSize={12}
                     readonly
                     startingValue={item.rating}
-                    style={{marginVertical: 10, alignSelf: 'flex-start'}}
-                    />
+                    style={{ marginVertical: 10, alignSelf: 'flex-start' }}
+                />
                 <Text style={{ fontSize: 12 }}>{'-- ' + item.author + ', ' + item.date} </Text>
             </View>
         );
     };
 
     return (
+        <Animatable.View animation="fadeInUp" duration={2000} delay={1000}>        
         <Card title='Comments' >
             <FlatList
                 data={comments}
@@ -85,6 +88,8 @@ function RenderComments(props) {
                 keyExtractor={item => item.id.toString()}
             />
         </Card>
+        </Animatable.View>
+
     );
 }
 
@@ -95,10 +100,10 @@ class Dishdetail extends Component {
 
         this.state = {
             showModal: false,
-            dishId:'',
-            rating:'',
-            author:'',
-            comment:''
+            dishId: '',
+            rating: '',
+            author: '',
+            comment: ''
         }
     }
 
@@ -111,28 +116,28 @@ class Dishdetail extends Component {
     }
 
     handleCommentForm(dishId) {
-        this.props.postComment(dishId, this.state.rating,this.state.author,this.state.comment);
+        this.props.postComment(dishId, this.state.rating, this.state.author, this.state.comment);
         this.toggleModal();
     }
 
     resetForm() {
         this.setState({
             showModal: false,
-            dishId:'',
-            rating:'',
-            author:'',
-            comment:''
+            dishId: '',
+            rating: '',
+            author: '',
+            comment: ''
         });
     }
 
     markFavorite(dishId) {
-        
+
         this.props.postFavorite(dishId);
     }
 
     render() {
         const dishId = this.props.navigation.getParam('dishId', '');
-        
+
         return (
             <ScrollView>
                 <RenderDish dish={this.props.dishes.dishes[+dishId]}
@@ -154,7 +159,7 @@ class Dishdetail extends Component {
                         <Input
                             placeholder='Author'
                             leftIcon={{ type: 'font-awesome', name: 'user' }}
-                            onChangeText={(value) => this.setState({ author: value})}
+                            onChangeText={(value) => this.setState({ author: value })}
                         />
                     </View>
                     <View style={styles.formRow}>
@@ -162,7 +167,7 @@ class Dishdetail extends Component {
                         <Input
                             placeholder='Comment'
                             leftIcon={{ type: 'font-awesome', name: 'comment' }}
-                            onChangeText={(value) => this.setState({ comment: value})}
+                            onChangeText={(value) => this.setState({ comment: value })}
                         />
                     </View>
                     <View style={styles.formRow}>
